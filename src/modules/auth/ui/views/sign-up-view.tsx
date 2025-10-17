@@ -12,7 +12,7 @@ import { Alert, AlertTitle } from "@/components/ui/alert";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
-;
+import{FaGithub, FaGoogle} from "react-icons/fa";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -47,6 +47,7 @@ export const SignUpView = () => {
                 name:data.name,
                 email: data.email,
                 password: data.password,
+                callbackURL:"/",
 
             });
             if (res?.error) {
@@ -55,6 +56,27 @@ export const SignUpView = () => {
             }
             // on success navigate (adjust target as needed)
             router.push("/");
+        } catch (err: any) {
+            setError(err?.message || "An unexpected error occurred");
+        } finally {
+            setPending(false);
+        }
+    };
+    const onSocial = async (provider: "google" | "github") => {
+        setError(null);
+        setPending(true);
+        try {
+            const res = await authClient.signIn.social({
+                provider: provider,
+                callbackURL: "/"    
+
+            });
+            if (res?.error) {
+                setError(res.error.message || "An error occurred");
+                return;
+            }
+            // on success navigate (adjust target as needed)
+           
         } catch (err: any) {
             setError(err?.message || "An unexpected error occurred");
         } finally {
@@ -149,8 +171,16 @@ export const SignUpView = () => {
                                  </span>
                                 </div>
                                 <div className="grid  grid-cols-2 gap-4">
-                                    <Button disabled={pending} variant="outline" type="button" className="w-full">Google</Button>
-                                    <Button disabled={pending} variant="outline" type="button" className="w-full">GitHub</Button>
+                                    <Button 
+                                    onClick={()=>onSocial("google")}
+                                    disabled={pending} variant="outline" type="button" className="w-full">
+                                        <FaGoogle/>
+                                    </Button>
+                                    <Button onClick={()=>{
+                                        onSocial("github")
+                                    }} disabled={pending} variant="outline" type="button" className="w-full">
+                                        <FaGithub/>
+                                    </Button>
                                 </div>
                                 <div className="text-center text-sm text-muted-foreground">
                                     Alreadyhave an account? <Link href="/sign-in" className="underline underline-offset-4">Sign In</Link>
