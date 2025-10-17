@@ -1,42 +1,19 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-"use client"
+import { auth} from "@/lib/auth";
+import { HomeView } from "@/modules/home/ui/views/home-view";
+import { redirect } from "next/navigation";
+import { headers } from "next/headers";
+const Page = async () => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {useState} from "react";
-import { authClient } from "@/lib/auth-client";
-
-export default function Home() {
-  const [name, setName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-
-  const onSubmit = () => {
-    authClient.signUp.email({
-      email, // user email address
-      password, // user password -> min 8 characters by default
-      name, // user display name
-    }, {
-      onRequest: (ctx: any) => {
-        // show loading
-      },
-      onSuccess: (ctx: any) => {
-        // redirect to the dashboard or sign in page
-      },
-      onError: (ctx: any) => {
-        // display the error message
-        alert(ctx.error?.message ?? "An error occurred");
-      },
-    });
-  };
-
+  if(!session){
+    redirect('/sign-in');
+  }
   return (
-    <div className="flex flex-col gap-4 p-4"> 
-      <Input placeholder="Name" value={name} onChange={(e) => setName((e as any).target.value)} />
-      <Input placeholder="Email" value={email} onChange={(e) => setEmail((e as any).target.value)} />
-      <Input placeholder="Password" type="password" value={password} onChange={(e) => setPassword((e as any).target.value)} />
-      <Button onClick={onSubmit}>Create User</Button>
+    <div>
+      <HomeView />
     </div>
-  );
+  )
 }
+export default Page
