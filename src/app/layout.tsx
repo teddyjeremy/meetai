@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter as InterFont } from "next/font/google";
 import "./globals.css";
+import {TRPCReactProvider} from "@/trpc/client";
 
 const Inter = InterFont({
   subsets: ["latin"],
@@ -18,12 +19,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <TRPCReactProvider>
+      <html lang="en">
       <body
         className={`${Inter.className}  antialiased`}
       >
         {children}
       </body>
     </html>
+    </TRPCReactProvider>
+    
   );
 }
