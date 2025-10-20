@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter as InterFont } from "next/font/google";
 import "./globals.css";
 import {TRPCReactProvider} from "@/trpc/client";
+import { Toaster } from "@/components/ui/sonner";
+
 
 const Inter = InterFont({
   subsets: ["latin"],
@@ -24,6 +26,7 @@ export default function RootLayout({
       <body
         className={`${Inter.className}  antialiased`}
       >
+        <Toaster />
         {children}
       </body>
     </html>
